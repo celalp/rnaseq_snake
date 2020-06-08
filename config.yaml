@@ -1,0 +1,13 @@
+resources:
+  gtf: /home/acelik/lp/acelik_files/genomes/species/Mus_musculus.GRCm38/annotations/Mus_musculus.GRCm38.95.gtf
+  fasta: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/genome/Mus_musculus.GRCm38.fa
+  fai: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/genome/Mus_musculus.GRCm38.fa.fai
+  ribo_int: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/annotations/rRNA.interval_list
+  refflat: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/annotations/Mus_musculus.GRCm38.95.refFlat.txt.gz
+  star_index: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/genome/star261
+  rsem_index: /hpf/largeprojects/ccmbio/acelik_files/genomes/species/Mus_musculus.GRCm38/rsem_index/rsem_index
+  tx_db: /hpf/projects/dig2/acelik_analysis/clinical_pipeline/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.db
+executables:
+  gatk: /hpf/tools/centos6/gatk/3.7.0/GenomeAnalysisTK.jar
+  picard: /hpf/tools/centos6/picard-tools/2.18.0/picard.jar
+
