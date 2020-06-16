@@ -26,8 +26,10 @@ if __name__ == "__main__":
     for i in range(samples.shape[0]):
         read1 = samples.iloc[i, 1]
         read2 = samples.iloc[i, 2]
-        if not os.path.isfile(read1) or not os.path.isfile(read2):
-            raise FileNotFoundError("could not find one or both of the reads")
+        if not os.path.isfile(read1):
+            raise FileNotFoundError("could not find read1 for "+samples.iloc[i,0])
+        if not os.path.isfile(read2) and not math.isnan(read2):
+            raise FileNotFoundError("could not find read2 for "+samples.iloc[i,0])
         else:
             samplename=samples.iloc[i, 0]
             output_directory=args.outdir
@@ -38,7 +40,10 @@ if __name__ == "__main__":
             else:
                 os.makedirs(output_directory, exist_ok=True)
                 config["samplename"] = samplename
-                config["reads"] = {"read1": read1, "read2": read2}
+                if math.isnan(read2):
+                    config["reads"] = {"read1": read1}
+                else:
+                    config["reads"] = {"read1": read1, "read2":read2}
                 config["output_directory"] = output_directory
 
                 # write the new config yaml file to output directory this is for reproducibility
@@ -51,7 +56,7 @@ if __name__ == "__main__":
                     format(samplename=samplename, script=args.bash_script, outdir=output_directory)
 
                 print(command)
-                os.system(command)
+                #os.system(command)
 
 
 
