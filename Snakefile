@@ -22,6 +22,11 @@ rule done:
         bam="/".join([output_directory, samplename+".mdup.bam"]),
         gene="/".join([output_directory, samplename + ".genes.results"]),
         isoform = "/".join([output_directory, samplename + ".isoforms.results"])
+    shell:
+       """
+       rm -rf {samplename}Log.out {samplename}Log.final.out {samplename}Log.progress.out \
+          {samplename}_STARgenome {samplename}_STARpass1 {samplename}_STARtmp
+       """
 
 rule star:
     input:  # TODO use expand of wildcards here reads_prefix?
