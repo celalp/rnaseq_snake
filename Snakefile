@@ -3,9 +3,13 @@ import os
 configfile: "config.yaml"
 
 reads1=config["reads"]["read1"]
-reads2=config["reads"]["read2"]
 lib1=reads1.split("/").pop().replace(".fastq.gz", "")
-lib2=reads2.split("/").pop().replace(".fastq.gz", "")
+
+if "read2" in config["reads"].keys():
+	reads2=config["reads"]["read2"]
+	lib2=reads2.split("/").pop().replace(".fastq.gz", "")
+else:
+  reads2
 
 samplename=config["samplename"]
 

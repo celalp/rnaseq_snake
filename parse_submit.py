@@ -3,6 +3,7 @@ import os
 import argparse as arg
 import shutil
 import yaml
+import math
 
 if __name__ == "__main__":
     parser = arg.ArgumentParser(description='Submit rna-seq alignment and quantitation jobs')
@@ -28,9 +29,11 @@ if __name__ == "__main__":
         read2 = samples.iloc[i, 2]
         if not os.path.isfile(read1):
             raise FileNotFoundError("could not find read1 for "+samples.iloc[i,0])
-        if not os.path.isfile(read2) and not math.isnan(read2):
+        if not os.path.isfile(str(read2)) and not pd.isnull(read2):
             raise FileNotFoundError("could not find read2 for "+samples.iloc[i,0])
         else:
+            if pd.isnull(read2):
+              print(samples.iloc[i,0] + " is a single end library")
             samplename=samples.iloc[i, 0]
             output_directory=args.outdir
             output_directory=os.path.abspath(output_directory)+"/"+samplename
@@ -40,7 +43,7 @@ if __name__ == "__main__":
             else:
                 os.makedirs(output_directory, exist_ok=True)
                 config["samplename"] = samplename
-                if math.isnan(read2):
+                if pd.isnull(read2):
                     config["reads"] = {"read1": read1}
                 else:
                     config["reads"] = {"read1": read1, "read2":read2}
@@ -56,7 +59,7 @@ if __name__ == "__main__":
                     format(samplename=samplename, script=args.bash_script, outdir=output_directory)
 
                 print(command)
-                #os.system(command)
+                os.system(command)
 
 
 
