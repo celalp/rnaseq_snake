@@ -92,6 +92,33 @@ if libtype=="paired-end":
         shell:
             "fastqc -t 10 -q --extract -o {output_directory} {input.read1} {input.read2}"
 
+    rule rsem:
+        input:
+            rules.star.output.tx_align
+        output:
+            gene = "/".join([output_directory, samplename + ".genes.results"]),
+            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
+        params:
+            forward_prob = "0",
+            index = config["resources"]["rsem_index"],
+            max_len = "1000",
+            libtype= libtype
+        threads: 10
+        shell:
+            """
+            rsem-calculate-expression \
+                --bam \
+                --num-threads 10 \
+                --fragment-length-max {params.max_len} \
+                --no-bam-output \
+                --{params.libtype} \
+                --estimate-rspd \
+                --calc-ci \
+                --forward-prob {params.forward_prob} \
+                {input} \
+                {params.index} {output_directory}/{samplename}
+            """
+
 else:
     rule done:
         input:
@@ -164,32 +191,30 @@ else:
         shell:
             "fastqc -t 10 -q --extract -o {output_directory} {input.read1}"
 
-rule rsem:
-    input:
-        rules.star.output.tx_align
-    output:
-        gene = "/".join([output_directory, samplename + ".genes.results"]),
-        isoform = "/".join([output_directory, samplename + ".isoforms.results"])
-    params:
-        forward_prob = "0",
-        index = config["resources"]["rsem_index"],
-        max_len = "1000",
-        libtype= libtype
-    threads: 10
-    shell:
-        """
-        rsem-calculate-expression \
-            --bam \
-            --num-threads 10 \
-            --fragment-length-max {params.max_len} \
-            --no-bam-output \
-            --{params.libtype} \
-            --estimate-rspd \
-            --calc-ci \
-            --forward-prob {params.forward_prob} \
-            {input} \
-            {params.index} {output_directory}/{samplename}
-        """
+    rule rsem:
+        input:
+            rules.star.output.tx_align
+        output:
+            gene = "/".join([output_directory, samplename + ".genes.results"]),
+            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
+        params:
+            forward_prob = "0",
+            index = config["resources"]["rsem_index"],
+            max_len = "1000"
+        threads: 10
+        shell:
+            """
+            rsem-calculate-expression \
+                --bam \
+                --num-threads 10 \
+                --fragment-length-max {params.max_len} \
+                --no-bam-output \
+                --estimate-rspd \
+                --calc-ci \
+                --forward-prob {params.forward_prob} \
+                {input} \
+                {params.index} {output_directory}/{samplename}
+            """
 
 
 rule mark_duplicates:
