@@ -28,7 +28,7 @@ output_directory=config["output_directory"]
 
 rule done:
     input:
-        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", libname=libs),
+        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", output_directory=output_directory, libs=libs),
         alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
         inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
         duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
