@@ -15,5 +15,5 @@ module load R
 
 cd $outdir
 
-snakemake -s Snakefile --cores 11 --jobs 10 --configfile=config.yaml -k -r
+snakemake -s Snakefile --cores 11 --jobs 10 --configfile=config.yaml -k -r $dry
 

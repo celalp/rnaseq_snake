@@ -11,6 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--snakefile', type=str, help='snakefile', action="store")
     parser.add_argument('-b', '--bash_script', type=str, help='submission script', action="store")
     parser.add_argument('-o', '--outdir', type=str, help='name of the output directory', action="store")
+    parser.add_argument('-d', '--dry_run', type=str, help='dry run do not submit', action="store_true")
     parser.add_argument('-r', '--resume', help='resubmit, resume after a failed job', action='store_true', default=False)
     args = parser.parse_args()
 
@@ -54,8 +55,13 @@ if __name__ == "__main__":
                     yaml.dump(config, outfile, default_flow_style=False)
 
                 shutil.copy(args.snakefile, output_directory)
-                command="qsub -v outdir={outdir} {script} -N {samplename} -e {outdir}/{samplename}.err -o {outdir}/{samplename}.out".\
-                    format(samplename=samplename, script=args.bash_script, outdir=output_directory)
+                if args.dry_run:
+                    dry="-n"
+                else:
+                    dry=""
+
+                command = "qsub -v outdir={outdir},dry={dry} {script} -N {samplename} -e {outdir}/{samplename}.err -o {outdir}/{samplename}.out". \
+                    format(samplename=samplename, script=args.bash_script, outdir=output_directory, dry=dry)
 
                 print(command)
                 os.system(command)
