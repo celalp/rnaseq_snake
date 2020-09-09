@@ -8,213 +8,120 @@ lib1=reads1.split("/").pop().replace(".fastq.gz", "")
 if "read2" in config["reads"].keys():
     reads2=config["reads"]["read2"]
     lib2=reads2.split("/").pop().replace(".fastq.gz", "")
-    libtype="paired-end"
+    libtype="--paired-end"
+    reads=reads1+" "+reads2
+    libs=[lib1, lib2]
 else:
-    libtype="single-end"
+    libtype=""
+    reads=reads1
+    libs=[lib1]
 
+if reads1.endswith(".gz"):
+    compressed="--readFilesCommand zcat"
+else:
+    compressed=""
 
 samplename=config["samplename"]
 
 output_directory=config["output_directory"]
 
-if libtype=="paired-end":
-    rule done:
-        input:
-            fastqc1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
-            fastqc2="/".join([output_directory, lib2+"_fastqc/fastqc_data.txt"]),
-            alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
-            inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
-            duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
-            rnaseq="/".join([output_directory, samplename+".rnaseq_metrics.txt"]),
-            bam="/".join([output_directory, samplename+".mdup.bam"]),
-            gene="/".join([output_directory, samplename + ".genes.results"]),
-            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
-        shell:
-           """
-           rm -rf {samplename}Log.out {samplename}Log.final.out {samplename}Log.progress.out \
-              {samplename}_STARgenome {samplename}_STARpass1 {samplename}_STARtmp
-           """
 
-    rule star:
-        input:  # TODO use expand of wildcards here reads_prefix?
-            read1 = reads1,
-            read2 = reads2
-        output:
-            tx_align = "/".join([output_directory, samplename + "Aligned.toTranscriptome.out.bam"]),
-            genome_align = temp("/".join([output_directory, samplename + "Aligned.out.bam"])),
-            genome_align_sorted = "/".join([output_directory, samplename + "Aligned.sorted.bam"]),
-            junc_file = "/".join([output_directory, samplename + "SJ.out.tab"])
-        params:
-            index = config["resources"]["star_index"],
-            gtf = config["resources"]["gtf"],
-            prefix = "/".join([output_directory, samplename]),
-            picard = config["executables"]["picard"]
-        threads: 10
-        shell:
-            """
-            STAR --runMode alignReads \
-            --runThreadN 10 \
-            --readFilesCommand zcat \
-            --readFilesIn {input.read1} {input.read2} \
-            --genomeDir {params.index} \
-            --outFileNamePrefix {params.prefix} \
-            --twopassMode Basic \
-            --sjdbGTFfile {params.gtf} \
-            --outFilterType BySJout \
-            --limitSjdbInsertNsj 1200000 \
-            --outSAMstrandField intronMotif \
-            --outFilterIntronMotifs None \
-            --alignSoftClipAtReferenceEnds Yes \
-            --quantMode TranscriptomeSAM GeneCounts \
-            --outSAMtype BAM Unsorted \
-            --outSAMattrRGline ID:{samplename}  SM:{samplename}  PL:ILLUMINA \
-            --outSAMattributes All \
-            --outSAMunmapped Within \
-            --outSAMprimaryFlag AllBestScore \
-            --chimSegmentMin 15 \
-            --chimJunctionOverhangMin 15 \
-            --chimOutType Junctions \
-            --chimMainSegmentMultNmax 1 \
-            --genomeLoad NoSharedMemory
-    
-            java -jar {params.picard} SortSam I={output.genome_align} \
-            O={output.genome_align_sorted} \
-            SO=coordinate
-            """
-    rule fastqc:
-        input:
-            read1=reads1,
-            read2=reads2
-        output:
-            report1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
-            report2="/".join([output_directory, lib2+"_fastqc/fastqc_data.txt"])
-        threads: 10
-        shell:
-            "fastqc -t 10 -q --extract -o {output_directory} {input.read1} {input.read2}"
+rule done:
+    input:
+        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", libname=libs),
+        alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
+        inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
+        duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
+        rnaseq="/".join([output_directory, samplename+".rnaseq_metrics.txt"]),
+        bam="/".join([output_directory, samplename+".mdup.bam"]),
+        gene="/".join([output_directory, samplename + ".genes.results"]),
+        isoform = "/".join([output_directory, samplename + ".isoforms.results"])
+    shell:
+       """
+       rm -rf {samplename}Log.out {samplename}Log.final.out {samplename}Log.progress.out \
+          {samplename}_STARgenome {samplename}_STARpass1 {samplename}_STARtmp
+       """
 
-    rule rsem:
-        input:
-            rules.star.output.tx_align
-        output:
-            gene = "/".join([output_directory, samplename + ".genes.results"]),
-            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
-        params:
-            forward_prob = "0",
-            index = config["resources"]["rsem_index"],
-            max_len = "1000",
-            libtype= libtype
-        threads: 10
-        shell:
-            """
-            rsem-calculate-expression \
-                --bam \
-                --num-threads 10 \
-                --fragment-length-max {params.max_len} \
-                --no-bam-output \
-                --{params.libtype} \
-                --estimate-rspd \
-                --calc-ci \
-                --forward-prob {params.forward_prob} \
-                {input} \
-                {params.index} {output_directory}/{samplename}
-            """
+rule star:
+    input:
+        reads=reads
+    output:
+        tx_align = "/".join([output_directory, samplename + "Aligned.toTranscriptome.out.bam"]),
+        genome_align = temp("/".join([output_directory, samplename + "Aligned.out.bam"])),
+        genome_align_sorted = "/".join([output_directory, samplename + "Aligned.sorted.bam"]),
+        junc_file = "/".join([output_directory, samplename + "SJ.out.tab"])
+    params:
+        index = config["resources"]["star_index"],
+        gtf = config["resources"]["gtf"],
+        prefix = "/".join([output_directory, samplename]),
+        picard = config["executables"]["picard"]
+    threads: 10
+    shell:
+        """
+        STAR --runMode alignReads \
+        --runThreadN 10 \
+        {compressed} --readFilesIn {input.reads} \
+        --genomeDir {params.index} \
+        --outFileNamePrefix {params.prefix} \
+        --twopassMode Basic \
+        --sjdbGTFfile {params.gtf} \
+        --outFilterType BySJout \
+        --limitSjdbInsertNsj 1200000 \
+        --outSAMstrandField intronMotif \
+        --outFilterIntronMotifs None \
+        --alignSoftClipAtReferenceEnds Yes \
+        --quantMode TranscriptomeSAM GeneCounts \
+        --outSAMtype BAM Unsorted \
+        --outSAMattrRGline ID:{samplename}  SM:{samplename}  PL:ILLUMINA \
+        --outSAMattributes All \
+        --outSAMunmapped Within \
+        --outSAMprimaryFlag AllBestScore \
+        --chimSegmentMin 15 \
+        --chimJunctionOverhangMin 15 \
+        --chimOutType Junctions \
+        --chimMainSegmentMultNmax 1 \
+        --genomeLoad NoSharedMemory
 
-else:
-    rule done:
-        input:
-            fastqc1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
-            alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
-            inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
-            duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
-            rnaseq="/".join([output_directory, samplename+".rnaseq_metrics.txt"]),
-            bam="/".join([output_directory, samplename+".mdup.bam"]),
-            gene="/".join([output_directory, samplename + ".genes.results"]),
-            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
-        shell:
-           """
-           rm -rf {samplename}Log.out {samplename}Log.final.out {samplename}Log.progress.out \
-              {samplename}_STARgenome {samplename}_STARpass1 {samplename}_STARtmp
-           """
+        java -jar {params.picard} SortSam I={output.genome_align} \
+        O={output.genome_align_sorted} \
+        SO=coordinate
+        """
 
-    rule star:
-        input:  # TODO use expand of wildcards here reads_prefix?
-            read1 = reads1
-        output:
-            tx_align = "/".join([output_directory, samplename + "Aligned.toTranscriptome.out.bam"]),
-            genome_align = temp("/".join([output_directory, samplename + "Aligned.out.bam"])),
-            genome_align_sorted = "/".join([output_directory, samplename + "Aligned.sorted.bam"]),
-            junc_file = "/".join([output_directory, samplename + "SJ.out.tab"])
-        params:
-            index = config["resources"]["star_index"],
-            gtf = config["resources"]["gtf"],
-            prefix = "/".join([output_directory, samplename]),
-            picard = config["executables"]["picard"]
-        threads: 10
-        shell:
-            """
-            STAR --runMode alignReads \
-            --runThreadN 10 \
-            --readFilesCommand zcat \
-            --readFilesIn {input.read1} \
-            --genomeDir {params.index} \
-            --outFileNamePrefix {params.prefix} \
-            --twopassMode Basic \
-            --sjdbGTFfile {params.gtf} \
-            --outFilterType BySJout \
-            --limitSjdbInsertNsj 1200000 \
-            --outSAMstrandField intronMotif \
-            --outFilterIntronMotifs None \
-            --alignSoftClipAtReferenceEnds Yes \
-            --quantMode TranscriptomeSAM GeneCounts \
-            --outSAMtype BAM Unsorted \
-            --outSAMattrRGline ID:{samplename}  SM:{samplename}  PL:ILLUMINA \
-            --outSAMattributes All \
-            --outSAMunmapped Within \
-            --outSAMprimaryFlag AllBestScore \
-            --chimSegmentMin 15 \
-            --chimJunctionOverhangMin 15 \
-            --chimOutType Junctions \
-            --chimMainSegmentMultNmax 1 \
-            --genomeLoad NoSharedMemory
-    
-            java -jar {params.picard} SortSam I={output.genome_align} \
-            O={output.genome_align_sorted} \
-            SO=coordinate
-            """
+rule fastqc:
+    input:
+        reads
+    output:
+        report1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
+        report2="/".join([output_directory, lib2+"_fastqc/fastqc_data.txt"])
+    threads: 10
+    shell:
+        "fastqc -t 10 -q --extract -o {output_directory} {input.reads}"
 
-    rule fastqc:
-        input:
-            read1=reads1
-        output:
-            report1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
-        threads: 10
-        shell:
-            "fastqc -t 10 -q --extract -o {output_directory} {input.read1}"
-
-    rule rsem:
-        input:
-            rules.star.output.tx_align
-        output:
-            gene = "/".join([output_directory, samplename + ".genes.results"]),
-            isoform = "/".join([output_directory, samplename + ".isoforms.results"])
-        params:
-            forward_prob = "0",
-            index = config["resources"]["rsem_index"],
-            max_len = "1000"
-        threads: 10
-        shell:
-            """
-            rsem-calculate-expression \
-                --bam \
-                --num-threads 10 \
-                --fragment-length-max {params.max_len} \
-                --no-bam-output \
-                --estimate-rspd \
-                --calc-ci \
-                --forward-prob {params.forward_prob} \
-                {input} \
-                {params.index} {output_directory}/{samplename}
-            """
+rule rsem:
+    input:
+        rules.star.output.tx_align
+    output:
+        gene = "/".join([output_directory, samplename + ".genes.results"]),
+        isoform = "/".join([output_directory, samplename + ".isoforms.results"])
+    params:
+        forward_prob = "0",
+        index = config["resources"]["rsem_index"],
+        max_len = "1000",
+    threads: 10
+    shell:
+        """
+        rsem-calculate-expression \
+            --bam \
+            --num-threads 10 \
+            --fragment-length-max {params.max_len} \
+            --no-bam-output \
+            {libtype} \
+            --estimate-rspd \
+            --calc-ci \
+            --forward-prob {params.forward_prob} \
+            {input} \
+            {params.index} {output_directory}/{samplename}
+        """
 
 
 rule mark_duplicates:

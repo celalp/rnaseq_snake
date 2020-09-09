@@ -3,7 +3,6 @@ import os
 import argparse as arg
 import shutil
 import yaml
-import math
 
 if __name__ == "__main__":
     parser = arg.ArgumentParser(description='Submit rna-seq alignment and quantitation jobs')
@@ -23,7 +22,7 @@ if __name__ == "__main__":
             config = yaml.safe_load(f)
             f.close()
 
-    # check sample files there's prob a better way of doing this
+    # may be use iterrows but it's not like there is a big need for performance here
     for i in range(samples.shape[0]):
         read1 = samples.iloc[i, 1]
         read2 = samples.iloc[i, 2]
