@@ -9,7 +9,7 @@ if "read2" in config["reads"].keys():
     reads2=config["reads"]["read2"]
     lib2=reads2.split("/").pop().replace(".fastq.gz", "")
     libtype="--paired-end"
-    reads=reads1+" "+reads2
+    reads=[reads1, reads2]
     libs=[lib1, lib2]
 else:
     libtype=""
@@ -28,7 +28,7 @@ output_directory=config["output_directory"]
 
 rule done:
     input:
-        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", output_directory=output_directory, libs=libs),
+        fastqc=expand("{output_directory}/{libname}_fastqc/fastqc_data.txt", output_directory=output_directory, libname=libs),
         alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
         inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
         duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
@@ -60,7 +60,8 @@ rule star:
         """
         STAR --runMode alignReads \
         --runThreadN 10 \
-        {compressed} --readFilesIn {input.reads} \
+        {compressed} \
+        --readFilesIn {input.reads} \
         --genomeDir {params.index} \
         --outFileNamePrefix {params.prefix} \
         --twopassMode Basic \
@@ -89,7 +90,7 @@ rule star:
 
 rule fastqc:
     input:
-        reads
+        reads=reads
     output:
         report1="/".join([output_directory, lib1+"_fastqc/fastqc_data.txt"]),
         report2="/".join([output_directory, lib2+"_fastqc/fastqc_data.txt"])
