@@ -1,0 +1,38 @@
+root_dir: /hpf/largeprojects/ccmbio/yliang/processed_analysis
+resources:
+  gtf: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.gtf
+  fasta: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/hs37d5_spikein.fa
+  ribo_int: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/rRNA.interval.list
+  refflat: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.refflat
+  rna_edit: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Human_AG_all_hg19_v2.no_chr.sorted.bed.gz
+  dbsnp: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/dbsnp_138.b37.vcf
+  indels: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Mills_and_1000G_gold_standard.indels.b37.vcf
+  star_index: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/star_index
+  rsem_index: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/rsem_index/rsem_index
+  vep_cache: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/ensembl-vep/
+  vep_plugin_dir: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/ensembl-vep/Plugins
+  vep_ver: 97
+  fai: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/hs37d5_spikein.fa.fai
+  gtex_db: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/gtex_data.db
+  tx_db: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.db
+  junctions: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/star_index/sjdbList.fromGTF.out.tab
+  spikeins: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/sirv_ercc_conc.csv
+  rmd: /hpf/largeprojects/ccmbio/yliang/clinical_pipeline/scripts/QC_report.Rmd
+  chroms: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_chroms.txt
+  collapsed_gtf: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87.collapsed.gtf
+  exons_bed: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.exons.bed
+  alia_file: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/gene_annotations_withAlias.rds
+  
+executables:
+  gatk: /hpf/tools/centos6/gatk/3.7.0/GenomeAnalysisTK.jar
+  picard: /hpf/tools/centos6/picard-tools/2.18.0/picard.jar
+  rnaseqc: /hpf/largeprojects/ccmbio/yliang/tools/rnaseqc.v2.3.5.linux
+script_parameters:
+  expression_use_z_score: false
+  expression_cutoff: 4
+  junction_cutoff: 5
+  junction_zscore_cutoff: 2
+  junction_fraction_cutoff: 0.05
+  refflat_ngenes: 500
+
+
