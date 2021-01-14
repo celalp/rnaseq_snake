@@ -1,6 +1,6 @@
 rule rsem:
     input:
-        os.path.join(output_directory, "alignment/{sampleID}_Aligned.toTranscriptome.out.bam")
+        os.path.join(output_directory, "alignment/{sampleID}Aligned.toTranscriptome.out.bam")
     output:
         gene=os.path.join(output_directory, "quantification/{sampleID}.genes.results"),
         isoform=os.path.join(output_directory, "quantification/{sampleID}.isoforms.results")
