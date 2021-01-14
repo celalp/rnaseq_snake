@@ -1,13 +1,14 @@
 rule rsem:
     input:
-        os.path.join(output_directory, "alignment/{sampleID}Aligned.toTranscriptome.out.bam")
+        bam=os.path.join(output_directory, "alignment/{sampleID}Aligned.toTranscriptome.out.bam")
     output:
         gene=os.path.join(output_directory, "quantification/{sampleID}.genes.results"),
-        isoform=os.path.join(output_directory, "quantification/{sampleID}.isoforms.results")
+        isoform=os.path.join(output_directory, "quantification/{sampleID}.isoforms.results")#remove this? no use for D.E.
     params:
         forward_prob="0",
         index=config["resources"]["rsem_index"],
-        max_len="1000"
+        max_len="1000",
+        samples_dir=os.path.join(output_directory, "quantification/{sampleID}")
     threads: 15
     shell:
         """
@@ -20,6 +21,6 @@ rule rsem:
             --estimate-rspd \
             --calc-ci \
             --forward-prob {params.forward_prob} \
-            {input} \
-            {params.index} {output_directory}/{wildcards.sampleID}
+            {input.bam} \
+            {params.index} {params.samples_dir}
         """
