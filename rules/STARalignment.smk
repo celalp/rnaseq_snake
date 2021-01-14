@@ -1,16 +1,16 @@
 rule star:
     input: #TODO use expand of wildcards here reads_prefix?
-        read1=reads[0],
-        read2=reads[1]
+        read1=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r1_path'],
+        read2=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r2_path']
     output:
-        tx_align=temp("/".join([output_directory, samplename+"Aligned.toTranscriptome.out.bam"])),
-        genome_align=temp("/".join([output_directory, samplename+"Aligned.out.bam"])),
-        genome_align_sorted=temp("/".join([output_directory, samplename+"Aligned.sorted.bam"])),
-        junc_file="/".join([output_directory, samplename+"SJ.out.tab"])
+        tx_align=temp(os.path.join(output_directory, "alignment/{sampleID}Aligned.toTranscriptome.out.bam")),
+        genome_align=temp(os.path.join(output_directory, "alignment/{sampleID}Aligned.out.bam")),
+        genome_align_sorted=temp(os.path.join(output_directory, "alignment/{sampleID}Aligned.sorted.bam")),
+        junc_file=os.path.join(output_directory, "alignment/{sampleID}SJ.out.tab")
     params:
         index=config["resources"]["star_index"],
         gtf=config["resources"]["gtf"],
-        prefix="/".join([output_directory, samplename]),
+        prefix=os.path.join(output_directory, "alignment/{sampleID}"),
         picard=config["executables"]["picard"]
     threads: 15
     shell:
@@ -30,7 +30,7 @@ rule star:
         --alignSoftClipAtReferenceEnds Yes \
         --quantMode TranscriptomeSAM GeneCounts \
         --outSAMtype BAM Unsorted \
-        --outSAMattrRGline ID:{samplename}  SM:{samplename}  PL:ILLUMINA \
+        --outSAMattrRGline ID:{wildcards.sampleID}  SM:{wildcards.sampleID}  PL:ILLUMINA \
         --outSAMattributes All \
         --outSAMunmapped Within \
         --outSAMprimaryFlag AllBestScore \
@@ -41,43 +41,14 @@ rule star:
         --genomeLoad NoSharedMemory
         
         samtools sort -@ 15 -m 2G -o {output.genome_align_sorted} {output.genome_align} 
-        # java -jar {params.picard} SortSam I={output.genome_align} \
-        # O={output.genome_align_sorted} \
-        # SO=coordinate
-        """
-
-rule rsem:
-    input:
-        rules.star.output.tx_align
-    output:
-        gene="/".join([output_directory, samplename+".genes.results"]),
-        isoform="/".join([output_directory, samplename+".isoforms.results"])
-    params:
-        forward_prob="0",
-        index=config["resources"]["rsem_index"],
-        max_len="1000"
-    threads: 15
-    shell:
-        """
-        rsem-calculate-expression \
-            --bam \
-            --num-threads 15 \
-            --fragment-length-max {params.max_len} \
-            --no-bam-output \
-            --paired-end \
-            --estimate-rspd \
-            --calc-ci \
-            --forward-prob {params.forward_prob} \
-            {input} \
-            {params.index} {output_directory}/{samplename}
         """
 
 rule mark_duplicates:
     input:
         rules.star.output.genome_align_sorted
     output:
-        bam="/".join([output_directory, samplename+".mdup.bam"]),
-        metrics="/".join([output_directory, samplename+".duplicate.metrics"])
+        bam=temp(os.path.join(output_directory, "alignment/{sampleID}.mdup.bam")),
+        metrics=temp(os.path.join(output_directory, "alignment/{sampleID}.duplicate.metrics"))
     params:
         picard=config["executables"]["picard"]
     threads: 10
@@ -94,9 +65,9 @@ rule samtools_idx:
     input:
         rules.mark_duplicates.output.bam
     output:
-        "/".join([output_directory, samplename+".idxstats"])
+        idx_stats=os.path.join(output_directory, "alignment/{sampleID}.idxstats")
     threads: 1
     shell:
         """
-        samtools idxstats {input} > {output}
+        samtools idxstats {input} > {output.idx_stats}
         """

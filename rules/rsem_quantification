@@ -1,0 +1,25 @@
+rule rsem:
+    input:
+        os.path.join(output_directory, "alignment/{sampleID}_Aligned.toTranscriptome.out.bam")
+    output:
+        gene=os.path.join(output_directory, "quantification/{sampleID}.genes.results"),
+        isoform=os.path.join(output_directory, "quantification/{sampleID}.isoforms.results")
+    params:
+        forward_prob="0",
+        index=config["resources"]["rsem_index"],
+        max_len="1000"
+    threads: 15
+    shell:
+        """
+        rsem-calculate-expression \
+            --bam \
+            --num-threads 15 \
+            --fragment-length-max {params.max_len} \
+            --no-bam-output \
+            --paired-end \
+            --estimate-rspd \
+            --calc-ci \
+            --forward-prob {params.forward_prob} \
+            {input} \
+            {params.index} {output_directory}/{wildcards.sampleID}
+        """

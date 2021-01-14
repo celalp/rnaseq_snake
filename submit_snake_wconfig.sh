@@ -20,7 +20,11 @@ module load vt/fb0288b
 module load bcftools
 module load tabix
 
-cd /hpf/projects/dig2/acelik_analysis/clinical_pipeline/clinical_pipeline
+cd /hpf/largeprojects/ccmbio/yliang/test_place/test_snakemake
+
+snakefile=main_test.snake
+config_file=config.yaml
+sample_file=test_samples.txt
 
 snakemake -s $snakefile --jobs 1 --config sample_file=$sample_file --configfile=$config_file -k -r
 

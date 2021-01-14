@@ -1,0 +1,17 @@
+include: "rules/common.smk"
+
+##### Target rules #####
+
+rule all:
+    input:
+        idx_stats=expand(os.path.join(output_directory, "alignment/{sampleID}.idxstats"), sampleID=sampleIDs),
+        bam=expand(os.path.join(output_directory, "alignment/{sampleID}.mdup.bam"), sampleID=sampleIDs),
+        junc_file=expand(os.path.join(output_directory, "alignment/{sampleID}SJ.out.tab"), sampleID=sampleIDs),
+        gene=expand(os.path.join(output_directory, "quantification/{sampleID}.genes.results"), sampleID=sampleIDs),
+        isoform=expand(os.path.join(output_directory, "quantification/{sampleID}.isoforms.results"), sampleID=sampleIDs)
+
+
+##### Modules #####
+
+include: "rules/STARalignment.smk"
+include: "rules/rsem_quantification.smk"

@@ -1,0 +1,13 @@
+sample	r1_path	r2_path
+WT_21_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6293_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6293_R2.fastq.gz
+WT_21_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6304_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6304_R2.fastq.gz
+KO_21_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6303_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6303_R2.fastq.gz
+KO_21_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6322_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6322_R2.fastq.gz
+KO_35_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7302_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7302_R2.fastq.gz
+KO_35_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7309_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7309_R2.fastq.gz
+WT_35_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7301_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7301_R2.fastq.gz
+WT_35_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7308_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7308_R2.fastq.gz
+WT_14_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_4_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_4_R2.fastq.gz
+WT_14_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_5_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_5_R2.fastq.gz
+KO_14_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_6_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_6_R2.fastq.gz
+KO_14_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_7_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatment_14/QAAU713/SAR14152/200512_D00423_0391_ACE7LDANXX/14_7_R2.fastq.gz
