@@ -4,6 +4,7 @@ __default__:
   time: "2:00:00"
   output: "{rule}.out"
   error: "{rule}.err"
+  join: True
 
 alignment:
   time: "20:00:00"
