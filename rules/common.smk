@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 
+configfile: "config.yaml"
+
 #samples=pd.read_csv(config["sample_file"], header=None, sep=" ")
 #reads=samples.iloc[0,1].split(",")
 #lib1=reads[0].split("/").pop().replace(".fastq.gz", "")

@@ -1,0 +1,15 @@
+system: "pbs"
+
+pbs:
+  command: "qsub"
+  key_mapping:
+    name: "-N {}"
+    account: "-A {}"
+    queue: "-q {}"
+    threads: "-l nodes=1:ppn={}" # always use 1 node
+    mem: "-l {}"
+    time: "-l walltime={}"
+    mail: "-m {}"
+    join: "-j {}"
+    output: "-o {}"
+    error: "-e {}"

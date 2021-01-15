@@ -1,0 +1,21 @@
+__default__:
+  name: "{rule}"
+  mem: "5g"
+  time: "2:00:00"
+  output: "{rule}.out"
+  error: "{rule}.err"
+
+alignment:
+  time: "20:00:00"
+  mem: "60g"
+  threads: 16
+
+expression:
+  mem: "60g"
+  time: "10:00:00"
+  threads: 16
+
+qc-metrics:
+  mem: "10g"
+  time: "10:00:00"
+  threads: 4

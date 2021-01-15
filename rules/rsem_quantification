@@ -10,6 +10,7 @@ rule rsem:
         max_len="1000",
         samples_dir=os.path.join(output_directory, "quantification/{sampleID}")
     threads: 15
+    group: "expression"
     shell:
         """
         rsem-calculate-expression \

@@ -13,6 +13,7 @@ rule star:
         prefix=os.path.join(output_directory, "alignment/{sampleID}"),
         picard=config["executables"]["picard"]
     threads: 15
+    group: "alignment"
     shell:
         """
         STAR --runMode alignReads \
@@ -47,11 +48,12 @@ rule mark_duplicates:
     input:
         rules.star.output.genome_align_sorted
     output:
-        bam=temp(os.path.join(output_directory, "alignment/{sampleID}.mdup.bam")),
-        metrics=temp(os.path.join(output_directory, "alignment/{sampleID}.duplicate.metrics"))
+        bam=os.path.join(output_directory, "alignment/{sampleID}.mdup.bam"),
+        metrics=os.path.join(output_directory, "alignment/{sampleID}.duplicate.metrics")
     params:
         picard=config["executables"]["picard"]
     threads: 10
+    group: "alignment"
     shell:
         """
         java -Xmx24g -jar {params.picard} MarkDuplicates \
@@ -67,6 +69,7 @@ rule samtools_idx:
     output:
         idx_stats=os.path.join(output_directory, "alignment/{sampleID}.idxstats")
     threads: 1
+    group: "alignment"
     shell:
         """
         samtools idxstats {input} > {output.idx_stats}
