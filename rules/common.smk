@@ -1,15 +1,14 @@
 import os
 import pandas as pd
+import yaml
+
+#load differential expression config yaml
+DE = yaml.load(open('de_config.yaml'), Loader=yaml.BaseLoader)
+    
+de_output_files=[i.split(',')[1]+'vs'+i.split(',')[2] for i in DE['contrast']]
+#['KO_35vsKO_14', 'KO_35vsWT_14', 'KO_35vsWT_35']
 
 configfile: "config.yaml"
-
-#samples=pd.read_csv(config["sample_file"], header=None, sep=" ")
-#reads=samples.iloc[0,1].split(",")
-#lib1=reads[0].split("/").pop().replace(".fastq.gz", "")
-#lib2=reads[1].split("/").pop().replace(".fastq.gz", "")
-#samplename = str(samples.iloc[0,0])
-#tissue=samples.iloc[0,2]
-#sample_description=samples.iloc[0,3].replace(",", "\t").replace(" ", "")
 
 #create the main output directory
 output_directory=config["root_dir"]

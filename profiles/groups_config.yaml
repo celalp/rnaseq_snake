@@ -1,6 +1,6 @@
 __default__:
   name: "{rule}"
-  mem: "5g"
+  mem: "8g"
   time: "2:00:00"
   output: "{rule}.out"
   error: "{rule}.err"

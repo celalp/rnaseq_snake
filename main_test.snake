@@ -1,3 +1,4 @@
+
 include: "rules/common.smk"
 
 ##### Target rules #####
@@ -7,16 +8,20 @@ rule all:
         idx_stats=expand(os.path.join(output_directory, "alignment/{sampleID}.idxstats"), sampleID=sampleIDs),
         bam=expand(os.path.join(output_directory, "alignment/{sampleID}.mdup.bam"), sampleID=sampleIDs),
         junc_file=expand(os.path.join(output_directory, "alignment/{sampleID}SJ.out.tab"), sampleID=sampleIDs),
-        gene=expand(os.path.join(output_directory, "quantification/{sampleID}.genes.results"), sampleID=sampleIDs),
-        isoform=expand(os.path.join(output_directory, "quantification/{sampleID}.isoforms.results"), sampleID=sampleIDs),
-        rnametrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.rnaseq_metrics.txt"), sampleID=sampleIDs),
-        qcreport1=expand(os.path.join(output_directory, "qc_metrics/{sampleID}_R1_fastqc/fastqc_data.txt"), sampleID=sampleIDs),
-        insertmetrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.insert_metrics.txt"), sampleID=sampleIDs),
-        alignmentmetrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.alignment_metrics.txt"), sampleID=sampleIDs)
+        #gene=expand(os.path.join(output_directory, "quantification/{sampleID}.genes.results"), sampleID=sampleIDs),
+        #isoform=expand(os.path.join(output_directory, "quantification/{sampleID}.isoforms.results"), sampleID=sampleIDs),
+        #rnametrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.rnaseq_metrics.txt"), sampleID=sampleIDs),
+        #qcreport1=expand(os.path.join(output_directory, "qc_metrics/{sampleID}_R1_fastqc/fastqc_data.txt"), sampleID=sampleIDs),
+        #insertmetrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.insert_metrics.txt"), sampleID=sampleIDs),
+        #alignmentmetrics=expand(os.path.join(output_directory, "qc_metrics/{sampleID}.alignment_metrics.txt"), sampleID=sampleIDs),
+        fake_result=expand(os.path.join(output_directory, "quantification/{sampleID}bam_information.txt"), sampleID=sampleIDs),
+        qc_summary=expand(os.path.join(output_directory, "qc_metrics/{sampleID}qc_summary.txt"), sampleID=sampleIDs),
+        de_result=expand(os.path.join(output_directory, "diff_ex/{comparison}.txt"), comparison=de_output_files)
 
 
 ##### Modules #####
 
 include: "rules/STARalignment.smk"
 include: "rules/rsem_quantification.smk"
+include: "rules/Diff_exp.smk"
 include: "rules/qc_metrics.smk"

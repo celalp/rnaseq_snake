@@ -1,3 +1,21 @@
+rule intermediate_qc:
+    input:
+        rnaseq_metrics=rules.rnaseq_metrics.output.metrics,
+        insert_size=rules.insert_size_metrics.output.metrics,
+        alignment_metrics=rules.alignment_metrics.output,
+        fastqc1=rules.fastqc.output.report1,
+        fastqc2=rules.fastqc.output.report2,
+        rnaseqc = rules.rnaseqc.output
+    output:
+        fake_qc=os.path.join(output_directory, "qc_metrics/{sampleID}qc_summary.txt")#a rule to put everything together
+    group: "qc-metrics"
+    threads: 2
+    shell:
+        """
+        ls -ld {input.rnaseq_metrics} {input.insert_size} {input.alignment_metrics} \
+        {input.fastqc1} {input.fastqc2} {input.rnaseqc} > {output.fake_qc}
+        """
+
 rule fastqc:
     input:
         read1=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r1_path'],
@@ -74,10 +92,13 @@ rule rnaseqc:
     output:
         os.path.join(output_directory, "qc_metrics/{sampleID}.metrics.tsv")
     params: 
-        rnaseqc = config["executables"]["rnaseqc"]
+        rnaseqc = config["executables"]["rnaseqc"],
+        output_dir=os.path.join(output_directory, "qc_metrics")
     group: "qc-metrics"
     shell:
         """
-        {params.rnaseqc} {input.collapsed_gtf} {input.bam} {output_directory} -s {samplename}
-        rm -f {output_directory}/*gct
+        {params.rnaseqc} {input.collapsed_gtf} {input.bam} {params.output_dir} -s {wildcards.sampleID}
+        rm -f {params.output_dir}/*gct
         """
+
+

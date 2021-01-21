@@ -1,0 +1,6 @@
+formula: condition
+tool_type: rsem
+quantification_output_extension: .genes.results
+contrast: ['condition,KO_35,WT_35', 'condition,KO_21,WT_21']
+pvalue_cutoff: 0.01
+log2fc_cutoff: 1.5

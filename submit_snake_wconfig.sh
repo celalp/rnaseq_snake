@@ -11,13 +11,8 @@ module load star/2.6.1c
 module load java/1.8.0_161
 module load fastqc/0.11.5
 module load rsem/1.2.22
-module load bedtools/2.21.0
 module load R/3.5.1
-module load python/3.5.6_vcf2db
-module load bcftools/1.6
-module load vep/97
-module load vt/fb0288b
-module load bcftools
+module load python/3.7.6
 module load tabix
 
 cd /hpf/largeprojects/ccmbio/yliang/test_place/test_snakemake
