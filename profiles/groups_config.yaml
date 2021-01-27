@@ -1,12 +1,12 @@
 __default__:
   name: "{rule}"
-  mem: "8g"
-  time: "2:00:00"
+  mem: "16g"
+  time: "05:00:00"
   output: "{rule}.out"
   error: "{rule}.err"
   join: True
 
-alignment:
+alignment-expression:
   time: "20:00:00"
   mem: "60g"
   threads: 16

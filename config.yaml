@@ -1,4 +1,5 @@
 root_dir: /hpf/largeprojects/ccmbio/yliang/test_place/test_snakemake/results
+de_configfile: /hpf/largeprojects/ccmbio/yliang/test_place/test_snakemake/de_config.yaml
 resources:
   gtf: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/Homo_sapiens.GRCh37.87_spikein.gtf
   fasta: /hpf/largeprojects/ccmbio/yliang/genomes/hg37/hs37d5_spikein.fa

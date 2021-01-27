@@ -3,8 +3,7 @@ rule intermediate_qc:
         rnaseq_metrics=rules.rnaseq_metrics.output.metrics,
         insert_size=rules.insert_size_metrics.output.metrics,
         alignment_metrics=rules.alignment_metrics.output,
-        fastqc1=rules.fastqc.output.report1,
-        fastqc2=rules.fastqc.output.report2,
+        fastqc=rules.fastqc.output.fastqc_result,
         rnaseqc = rules.rnaseqc.output
     output:
         fake_qc=os.path.join(output_directory, "qc_metrics/{sampleID}qc_summary.txt")#a rule to put everything together
@@ -13,22 +12,21 @@ rule intermediate_qc:
     shell:
         """
         ls -ld {input.rnaseq_metrics} {input.insert_size} {input.alignment_metrics} \
-        {input.fastqc1} {input.fastqc2} {input.rnaseqc} > {output.fake_qc}
+        {input.fastqc} {input.rnaseqc} > {output.fake_qc}
         """
 
 rule fastqc:
     input:
-        read1=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r1_path'],
-        read2=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r2_path']
-    threads: 2
+        reads=lambda wildcards: get_fastq(sample_df, wildcards.sampleID),
+        qclibs=lambda wildcards: get_qc_libs(samples_df, wildcards.sampleID)
+    threads: 4
     group: "qc-metrics"
     output:
-        report1=os.path.join(output_directory, "qc_metrics/{sampleID}_R1_fastqc/fastqc_data.txt"),
-        report2=os.path.join(output_directory, "qc_metrics/{sampleID}_R2_fastqc/fastqc_data.txt")
+        fastqc_result=expand(os.path.join(output_directory, "qc_metrics/{qclib}_fastqc/fastqc_data.txt"), qclib=qclibs)
     params:
         output_dir=os.path.join(output_directory, "qc_metrics")
     shell:
-        "fastqc -t 1 -q --extract -o {params.output_dir} {input.read1} {input.read2}"
+        "fastqc -t 4 -q --extract -o {params.output_dir} {input.reads} {input.read2}"
 
 rule alignment_metrics:
     input:

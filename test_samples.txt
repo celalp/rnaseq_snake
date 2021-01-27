@@ -1,3 +1,18 @@
-sample	r1_path	r2_path	tissue	ped
-20-43	/hpf/largeprojects/ccmbio/yliang/test_place/upgrade_pipline/test_data/20-43-sample_R1.fastq.gz	/hpf/largeprojects/ccmbio/yliang/test_place/upgrade_pipline/test_data/20-43-sample_R2.fastq.gz 	"Muscle - Skeletal"	20-43,20-43,0,0,0,0
+samplename	read1	read2	genotype	day	replicate	condition
+WT_21_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6293_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6293_R2.fastq.gz	WT	21	1	WT_21
+WT_21_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6304_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6304_R2.fastq.gz	WT	21	2	WT_21
+WT_21_3	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6321_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6321_R2.fastq.gz	WT	21	3	WT_21
+WT_21_4	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6358_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6358_R2.fastq.gz	WT	21	4	WT_21
+KO_21_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6303_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6303_R2.fastq.gz	KO	21	1	KO_21
+KO_21_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6322_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6322_R2.fastq.gz	KO	21	2	KO_21
+KO_21_3	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6323_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6323_R2.fastq.gz	KO	21	3	KO_21
+KO_21_4	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6359_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/notreatmen_21/6359_R2.fastq.gz	KO	21	4	KO_21
+KO_35_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7302_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7302_R2.fastq.gz	KO	35	1	KO_35
+KO_35_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7309_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7309_R2.fastq.gz	KO	35	2	KO_35
+KO_35_3	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7419_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7419_R2.fastq.gz	KO	35	3	KO_35
+KO_35_4	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7482_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7482_R2.fastq.gz	KO	35	4	KO_35
+WT_35_1	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7301_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7301_R2.fastq.gz	WT	35	1	WT_35
+WT_35_2	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7308_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7308_R2.fastq.gz	WT	35	2	WT_35
+WT_35_3	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7416_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7416_R2.fastq.gz	WT	35	3	WT_35
+WT_35_4	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7483_R1.fastq.gz	/hpf/largeprojects/ccmbio/acelik_files/MH/mouse_fq/vpa_35/7483_R2.fastq.gz	WT	35	4	WT_35
 

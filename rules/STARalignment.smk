@@ -1,7 +1,8 @@
 rule star:
-    input: #TODO use expand of wildcards here reads_prefix?
-        read1=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r1_path'],
-        read2=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r2_path']
+    input: 
+        #read1=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r1_path'],
+        #read2=lambda wildcards: sample_df.loc[wildcards.sampleID, 'r2_path']
+        reads=lambda wildcards: get_fastq(sample_df, wildcards.sampleID)
     output:
         tx_align=temp(os.path.join(output_directory, "alignment/{sampleID}Aligned.toTranscriptome.out.bam")),
         genome_align=temp(os.path.join(output_directory, "alignment/{sampleID}Aligned.out.bam")),
@@ -13,13 +14,13 @@ rule star:
         prefix=os.path.join(output_directory, "alignment/{sampleID}"),
         picard=config["executables"]["picard"]
     threads: 15
-    group: "alignment"
+    group: "alignment-expression"
     shell:
         """
         STAR --runMode alignReads \
         --runThreadN 15 \
         --readFilesCommand zcat \
-        --readFilesIn {input.read1} {input.read2} \
+        --readFilesIn {input.reads} \
         --genomeDir {params.index} \
         --outFileNamePrefix {params.prefix} \
         --twopassMode Basic \
@@ -53,7 +54,7 @@ rule mark_duplicates:
     params:
         picard=config["executables"]["picard"]
     threads: 10
-    group: "alignment"
+    group: "alignment-expression"
     shell:
         """
         java -Xmx24g -jar {params.picard} MarkDuplicates \
@@ -69,8 +70,38 @@ rule samtools_idx:
     output:
         idx_stats=os.path.join(output_directory, "alignment/{sampleID}.idxstats")
     threads: 1
-    group: "alignment"
+    group: "alignment-expression"
     shell:
         """
         samtools idxstats {input} > {output.idx_stats}
         """
+
+if config['option'].lower() == 'rsem':
+    rule rsem:
+        input:
+            bam=rules.star.output.tx_align
+            libtype=lambda wildcards: get_rsem_libtype(sample_df, wildcards.sampleID)
+        output:
+            gene=os.path.join(output_directory, "quantification/{sampleID}.genes.results"),
+            isoform=os.path.join(output_directory, "quantification/{sampleID}.isoforms.results")#remove this? no use for D.E.
+        params:
+            forward_prob="0",
+            index=config["resources"]["rsem_index"],
+            max_len="1000",
+            samples_dir=os.path.join(output_directory, "quantification/{sampleID}")
+        threads: 15
+        group: "alignment-expression"
+        shell:
+            """
+            rsem-calculate-expression \
+                --bam \
+                --num-threads 15 \
+                --fragment-length-max {params.max_len} \
+                --no-bam-output \
+                {input.libtype} \
+                --estimate-rspd \
+                --calc-ci \
+                --forward-prob {params.forward_prob} \
+                {input.bam} \
+                {params.index} {params.samples_dir}
+            """
