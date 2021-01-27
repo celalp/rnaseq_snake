@@ -9,7 +9,7 @@ output_directory=config["root_dir"]
 #different quantification tool output extensions
 exten = {'rsem': '.genes.results', 'kallisto': 'abundance.h5', 
 'salmon':'quant.sf.gz', 'sailfish': 'quant.sf'}
-quantification_output_extension=exten[config['quantification_option'].lower()]
+quantification_output_extension=exten[config['option'].lower()]
 
 #load samples
 sample_df = pd.read_csv(config["sample_file"], sep="\t")
