@@ -90,7 +90,7 @@ tximport_default_parameters<-list(rsem=list(type="rsem", abundanceCol="TPM",leng
                                             txIn = FALSE, txOut = FALSE), basic=list(txIn = FALSE, txOut = FALSE))
 #default pvalue and log2fc cutoff
 pvalue<-0.01
-log2fc<-1.5
+log2fc<-0
 
 option_list = list(
   make_option(c('-s','--samples_table'), type="character", help="input sample info table"),
