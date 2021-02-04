@@ -14,6 +14,7 @@ module load rsem/1.2.22
 module load R/4.0.3
 module load python/3.7.6
 module load tabix
+module load pandoc
 
 cd /hpf/largeprojects/ccmbio/yliang/test_place/test_snakemake
 

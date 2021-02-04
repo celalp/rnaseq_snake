@@ -1,5 +1,10 @@
 ## Main updates
 
+2/4
+* found an issue with the enrichment gene sets plotting (still solving)
+* uploaded an example of the enrichment analysis output report (tested in hpf, something wrong with the plotting)
+* added pandoc module 
+
 2/3
 * uploaded an example of the enrichment analysis output report
 * uploaded enrichment analysis R script

@@ -34,6 +34,7 @@
 #opt_parser <- OptionParser(option_list=option_list)
 #opt <- parse_args(opt_parser)
 
+#currentpath <- paste0(getwd(),'/scripts/enrichment_analysis.R')
 #gsea_analysis <- opt$gsea
 #output_dir <- opt$directory
 #dir.create(output_dir,mode="0770")#create the output dir
@@ -47,8 +48,8 @@
 #de_output <- read.csv(opt$de_result, header = T, sep = '\t')
 #de_output <- na.omit(de_output)
 
-#de_down <- de_output[de_output$regulation == 'down',]
-#de_up <- de_output[de_output$regulation == 'up',]
+#de_down <- de_output[de_output$regulation == 'Down',]
+#de_up <- de_output[de_output$regulation == 'Up',]
 
 #de_down_genelist <- de_down$ensemblID
 #de_up_genelist <- de_up$ensemblID
@@ -260,13 +261,13 @@ bscols(
 #' Some descriptions of the map here
 #' 
 #+ message=FALSE, warning=FALSE, fig.width=8, fig.height=7,eval=gsea_analysis
-emapplot(y, node_scale=1.5,layout="kk", showCategory = 30, color = "qvalues") 
+#emapplot(y, node_scale=1.5,layout="kk", showCategory = 30, color = "qvalues") 
 
 #+ results='asis', echo=FALSE
 #if true, hide <- default
 if (!gsea_analysis) {cat("-->")}
 
 # /* spin and knit this file to html
-knitr::spin(hair = "enrichment_report.R", knit = FALSE)
-rmarkdown::render("enrichment_report.R", output_file = output_name, output_format = "html_document", output_dir = output_dir)
+knitr::spin(hair = currentpath, knit = FALSE)
+rmarkdown::render(currentpath, output_file = output_name, output_format = "html_document", output_dir = output_dir)
 # */
