@@ -27,13 +27,16 @@
 #option_list = list(
 #  make_option(c('-s','--species'), type="character", help="species in this analysis"),
 #  make_option(c('-r','--de_result'), type="character", help="path to the DE result file"),
-#  make_option(c("-d", '--directory'), type="character",help="directory to output html result")
+#  make_option(c("-d", '--directory'), type="character",help="directory to output html result"),
+# make_option(c("-g", '--gsea'), action="store_true", default = FALSE, help="add this flag for GSEA")
 #) 
 
 #opt_parser <- OptionParser(option_list=option_list)
 #opt <- parse_args(opt_parser)
 
+#gsea_analysis <- opt$gsea
 #output_dir <- opt$directory
+#dir.create(output_dir,mode="0770")#create the output dir
 #output_name <- gsub('.txt', '-enrichment_report', rev(unlist(strsplit(opt$de_result, '/')))[1], )
 
 #database_list <- list(mouse='org.Mm.eg.db', human='org.Hg.eg.db')
@@ -179,7 +182,7 @@ bscols(
 #                    pAdjustMethod = "BH",
 #                    pvalueCutoff  = 0.01,
 #                    qvalueCutoff  = 0.05,
-                    #                    readable      = FALSE)
+#                    readable      = FALSE)
 
 #upGO_mf <-simplify(upGO_mf, cutoff=0.7, by="p.adjust", select_fun=min)
 
@@ -200,12 +203,15 @@ barplot(upGO_bp, showCategory=20,font.size = 9)+scale_size(range=c(2, 9))+
 #'
 
 
+#+ results='asis', echo=FALSE
+# if true, hide
+if (!gsea_analysis) {cat("<!---")}
 
 #' # Gene set enrichment analysis 
 #' 
 #' Gene sets information from Reactome pathway database
 
-#+ message=FALSE, warning=FALSE
+#+ message=FALSE, warning=FALSE, eval=gsea_analysis
 #use ReactomePA
 #requires Entrez gene ID as input
 #convert ensembl ID to entrez gene ID
@@ -240,7 +246,7 @@ y <- gsePathway(geneList,
 #' 
 #' More descriptions here on the columns
 #' 
-#+ message=FALSE, warning=FALSE, fig.width=8, fig.height=7
+#+ message=FALSE, warning=FALSE, fig.width=8, fig.height=7, eval=gsea_analysis
 yy<-as.data.frame(y)
 yy <-yy[order(yy$qvalues),]
 bscols(
@@ -253,8 +259,12 @@ bscols(
 #' 
 #' Some descriptions of the map here
 #' 
-#+ message=FALSE, warning=FALSE, fig.width=8, fig.height=7
+#+ message=FALSE, warning=FALSE, fig.width=8, fig.height=7,eval=gsea_analysis
 emapplot(y, node_scale=1.5,layout="kk", showCategory = 30, color = "qvalues") 
+
+#+ results='asis', echo=FALSE
+#if true, hide <- default
+if (!gsea_analysis) {cat("-->")}
 
 # /* spin and knit this file to html
 knitr::spin(hair = "enrichment_report.R", knit = FALSE)
