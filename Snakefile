@@ -28,7 +28,7 @@ output_directory=config["output_directory"]
 
 rule done:
     input:
-        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", output_directory=output_directory, libs=libs),
+        fastqc=expand("{output_directory}/{libname}/_fastqc/fastqc_data.txt", output_directory=output_directory, libname=libs),
         alignment="/".join([output_directory, samplename+".alignment_metrics.txt"]),
         inserts="/".join([output_directory, samplename+".insert_metrics.txt"]),
         duplicates="/".join([output_directory, samplename+".duplicate.metrics"]),
@@ -48,7 +48,6 @@ rule star:
     output:
         tx_align = "/".join([output_directory, samplename + "Aligned.toTranscriptome.out.bam"]),
         genome_align = temp("/".join([output_directory, samplename + "Aligned.out.bam"])),
-        genome_align_sorted = "/".join([output_directory, samplename + "Aligned.sorted.bam"]),
         junc_file = "/".join([output_directory, samplename + "SJ.out.tab"])
     params:
         index = config["resources"]["star_index"],
@@ -81,11 +80,20 @@ rule star:
         --chimOutType Junctions \
         --chimMainSegmentMultNmax 1 \
         --genomeLoad NoSharedMemory
-
-        java -jar {params.picard} SortSam I={output.genome_align} \
-        O={output.genome_align_sorted} \
-        SO=coordinate
         """
+
+rule sort:
+    input:
+        rules.star.output.genome_align
+    output:
+        genome_align_sorted = "/".join([output_directory, samplename + "Aligned.sorted.bam"])
+    threads: 4
+    shell:
+        """
+        samtools sort -@ 4 - m 10G - o {output.genome_align_sorted} {input}
+        """
+
+
 
 rule fastqc:
     input:
@@ -126,7 +134,7 @@ rule rsem:
 
 rule mark_duplicates:
     input:
-        rules.star.output.genome_align_sorted
+        rules.sort.output.genome_align_sorted
     output:
         bam="/".join([output_directory, samplename+".mdup.bam"]),
         metrics="/".join([output_directory, samplename+".duplicate.metrics"])
