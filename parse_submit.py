@@ -11,7 +11,7 @@ if __name__ == "__main__":
     parser.add_argument('-n', '--snakefile', type=str, help='snakefile', action="store")
     parser.add_argument('-b', '--bash_script', type=str, help='submission script', action="store")
     parser.add_argument('-o', '--outdir', type=str, help='name of the output directory', action="store")
-    parser.add_argument('-d', '--dry_run', type=str, help='dry run do not submit', action="store_true")
+    parser.add_argument('-d', '--dry_run', help='dry run do not submit', action="store_true", default=False)
     parser.add_argument('-r', '--resume', help='resubmit, resume after a failed job', action='store_true', default=False)
     args = parser.parse_args()
 
